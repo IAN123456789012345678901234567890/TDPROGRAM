@@ -34,7 +34,10 @@ public class Robot extends TimedRobot {
   // WPI_TalonSRX BackLeftTalon;
   // DOUBLES
   double rightSide;
-
+  boolean buttonAIsPressed = false;
+  boolean inPreciseMode = false;
+  
+  int precisionValue;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -100,10 +103,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    rightSide = controller.getRawAxis(1) / 10;
+    rightSide = controller.getRawAxis(1);
     FrontRightTalon.set(rightSide);
+    // WAIT/ PRECSION MODE INCOMING!!!!!!!!!!!!!!!
+    if (controller.getAButtonPressed() && buttonAIsPressed == false) {
+      inPreciseMode = !inPreciseMode;
+      buttonAIsPressed = true;
+    }
     
-
+    if (controller.getAButtonReleased()) {
+      buttonAIsPressed = false;
+    }
+    
+    if (inPreciseMode == true) {
+      precisionValue = 10;
+    } else if (inPreciseMode == false) {
+      precisionValue = 1;
+    } 
+    
   }
 
   /**
@@ -113,3 +130,5 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 }
+
+
