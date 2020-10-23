@@ -28,15 +28,29 @@ public class Robot extends TimedRobot {
 
   // NAMES
   XboxController controller;
+  // FRONT
   WPI_TalonSRX FrontRightTalon;
   WPI_VictorSPX FrontLeftTalon;
-  // WPI_TalonSRX BackRightTalon;
-  // WPI_TalonSRX BackLeftTalon;
-  // DOUBLES
+
+  // BACK
+   WPI_TalonSRX BackRightTalon;
+ WPI_TalonSRX BackLeftTalon;
+
+// THIS FOR TURN TABLE BELOW!
+WPI_TalonSRX turnTable;
+
+WPI_TalonSRX shooterTop;
+WPI_TalonSRX shooterBot;
+WPI_TalonSRX shooterBot2;
+
+  // DOUBLES AND BOOLEANS
   double rightSide;
+  double turningTable;
+  double leftSide;
+
   boolean buttonAIsPressed = false;
   boolean inPreciseMode = false;
-  
+
   int precisionValue;
   /**
    * This function is run when the robot is first started up and should be used
@@ -47,11 +61,15 @@ public class Robot extends TimedRobot {
 
     // NAME
     FrontRightTalon = new WPI_TalonSRX(15);
-
-    FrontLeftTalon.follow(FrontRightTalon);
     FrontLeftTalon = new WPI_VictorSPX(17);
-    
-    // more here
+     BackRightTalon = new WPI_TalonSRX(2);
+     BackLeftTalon = new WPI_TalonSRX(6);
+    FrontLeftTalon.follow(FrontRightTalon);
+
+     shooterTop = new WPI_TalonSRX(4);
+     shooterBot = new WPI_TalonSRX(5);
+     shooterBot2 = new WPI_TalonSRX(7);
+   // turnTable = new WPI_TalonSRX(?)
 
     controller = new XboxController(0);
   }
@@ -103,24 +121,54 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+
+    // TURN TABLE
+    // turningTable = controller.getRawAxis(?);
+    turnTable.set(turningTable);
+
+    // FRONT WHEELS
     rightSide = controller.getRawAxis(1);
     FrontRightTalon.set(rightSide);
-    // WAIT/ PRECSION MODE INCOMING!!!!!!!!!!!!!!!
+
+    // BACK WHEELS
+   // leftSide = controller.getRawAxis(?);
+    // BackRightTalon.set(leftSide);
+ if (controller.getXButtonPressed()) {
+shooterTop.set(ControlMode.PercentOutput, 0.2);
+shooterBot.set(ControlMode.PercentOutput, 0.2);
+shooterBot2.set(ControlMode.PercentOutput, 0.2);
+
+ } else if (controller.getYButtonPressed()) {
+  shooterTop.set(ControlMode.PercentOutput, 0.4);
+  shooterBot.set(ControlMode.PercentOutput, 0.4);
+  shooterBot2.set(ControlMode.PercentOutput, 0.4);
+ }else if (controller.getBButtonPressed()){
+  shooterTop.set(ControlMode.PercentOutput, 0.6);
+  shooterBot.set(ControlMode.PercentOutput, 0.6);
+  shooterBot2.set(ControlMode.PercentOutput, 0.6);
+ }else {
+    shooterTop.set(ControlMode.PercentOutput, 0);
+  shooterBot.set(ControlMode.PercentOutput, 0);
+  shooterBot2.set(ControlMode.PercentOutput, 0);
+  }
+
+
+    // WAIT/ PRECSION MODE INCOMING!!!!!!!!!
     if (controller.getAButtonPressed() && buttonAIsPressed == false) {
       inPreciseMode = !inPreciseMode;
       buttonAIsPressed = true;
     }
-    
+   
     if (controller.getAButtonReleased()) {
       buttonAIsPressed = false;
     }
-    
+   
     if (inPreciseMode == true) {
       precisionValue = 10;
     } else if (inPreciseMode == false) {
       precisionValue = 1;
     } 
-    
+ 
   }
 
   /**
@@ -130,5 +178,3 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 }
-
-
