@@ -69,8 +69,12 @@ WPI_TalonSRX laserMotor;
     FrontLeftTalon = new WPI_VictorSPX(17);
      BackRightTalon = new WPI_TalonSRX(2);
      BackLeftTalon = new WPI_TalonSRX(6);
-    FrontLeftTalon.follow(FrontRightTalon);
 
+     // FOLOW COMMANDS
+    FrontLeftTalon.follow(FrontRightTalon);
+    BackLeftTalon.follow(BackRightTalon);
+
+    
      shooterTop = new WPI_TalonSRX(4);
      shooterBot = new WPI_TalonSRX(5);
      shooterBot2 = new WPI_TalonSRX(7);
@@ -127,33 +131,58 @@ WPI_TalonSRX laserMotor;
   @Override
   public void teleopPeriodic() {
 
+
+
+
+
+double leftTrigger = controller.getRawAxis(2);
+
+if (leftTrigger>0){
+  shooterBot.set(ControlMode.PercentOutput, 0.8);
+  shooterBot2.set(ControlMode.PercentOutput, 0.8);
+
+}
+
     // TURN TABLE
    //  turningTable = controller.getRawAxis();
    // turnTable.set(turningTable);
     // getBumperPressed(GenericHID.Hand hand)
     // FRONT WHEELS
-    rightSide = controller.getRawAxis(1);
-    FrontRightTalon.set(rightSide);
+    leftSide = controller.getRawAxis(1);
+    FrontRightTalon.set(leftSide);
 
     // BACK WHEELS
-   // leftSide = controller.getRawAxis(?);
-    // BackRightTalon.set(leftSide);
+    rightSide = controller.getRawAxis(4);
+     BackRightTalon.set(rightSide);
+
+
+     // SHOOT TIME!
+
  if (controller.getXButtonPressed()) {
+
 shooterTop.set(ControlMode.PercentOutput, 0.2);
+
  } else if (controller.getYButtonPressed()) {
+
   shooterBot.set(ControlMode.PercentOutput, 0.4);
   shooterBot2.set(ControlMode.PercentOutput, 0.4);
+
  }else if (controller.getBButtonPressed()){
+
   shooterBot.set(ControlMode.PercentOutput, 0.6);
   shooterBot2.set(ControlMode.PercentOutput, 0.6);
+
+ }else if (leftTrigger>0){
+
+  shooterBot.set(ControlMode.PercentOutput, 0.8);
+  shooterBot2.set(ControlMode.PercentOutput, 0.8);
+
  }else {
-    shooterTop.set(ControlMode.PercentOutput, 0);
+
+  shooterTop.set(ControlMode.PercentOutput, 0);
   shooterBot.set(ControlMode.PercentOutput, 0);
   shooterBot2.set(ControlMode.PercentOutput, 0);
   }
-
-  
-
 
 
     // WAIT/ PRECSION MODE INCOMING!!!!!!!!!
@@ -171,6 +200,8 @@ shooterTop.set(ControlMode.PercentOutput, 0.2);
     } else if (inPreciseMode == false) {
       precisionValue = 1;
     } 
+
+    // BUMPER/TURN TABLE AND LASERS
     if (controller.getBumperPressed(Hand.kLeft)) {
       turnTable.set(ControlMode.PercentOutput, 0.2);
 
