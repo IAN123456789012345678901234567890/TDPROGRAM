@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -22,6 +23,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
+
+  //TEST
+  HighestSpeedCalc meth;
 
   // NAMES
   XboxController controller;
@@ -36,7 +40,7 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX shooterTop;
   WPI_TalonSRX shooterBot;
   WPI_TalonSRX shooterBot2;
-  WPI_TalonFX laserMotor;
+  Talon laserMotor;
 
   // DOUBLES AND BOOLEANS
   double rightSide;
@@ -44,6 +48,9 @@ public class Robot extends TimedRobot {
   double leftSide;
   boolean buttonAIsPressed = false;
   boolean inPreciseMode = false;
+  boolean digitalOutput = false;
+
+  DigitalOutput dio1;
 
   int precisionValue;
 
@@ -66,6 +73,11 @@ public class Robot extends TimedRobot {
     turnTable = new WPI_TalonSRX(9);
 
     controller = new XboxController(0);
+
+    dio1 = new DigitalOutput(0);
+
+
+    meth = new HighestSpeedCalc(0.285, FrontLeftDriveTalon);
   }
 
   @Override
@@ -91,7 +103,8 @@ public class Robot extends TimedRobot {
     //   shooterBot.set(ControlMode.PercentOutput, 0.8);
     //   shooterBot2.set(ControlMode.PercentOutput, 0.8);
 
-    // }
+
+
 
     // TURN TABLE
     // turningTable = controller.getRawAxis();
@@ -125,6 +138,20 @@ public class Robot extends TimedRobot {
       shooterBot.set(ControlMode.PercentOutput, 0);
       shooterBot2.set(ControlMode.PercentOutput, 0);
     }
+
+      // Lazer On and Off
+
+    if (controller.getStartButtonPressed() && digitalOutput == false) {
+
+      digitalOutput = true;
+
+    } else if (controller.getStartButtonReleased()){
+
+      digitalOutput = false; 
+
+    }
+
+    dio1.set(digitalOutput);
 
     // WAIT/ PRECSION MODE INCOMING!!!!!!!!!
     if (controller.getAButtonPressed() && buttonAIsPressed == false) {
@@ -167,6 +194,10 @@ public class Robot extends TimedRobot {
       turnTable.set(ControlMode.PercentOutput, 0);
     }
 
+
+    meth.getTimeAndVelocity();
+
+
   }
 
   /**
@@ -177,4 +208,4 @@ public class Robot extends TimedRobot {
   }
 }
 // LINE 206
-// !!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
